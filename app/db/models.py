@@ -11,15 +11,18 @@ class Base( DeclarativeBase):
 class Patient(Base):
     __tablename__ = 'patients' #lowercase only
 
-    id: Mapped[int] = mapped_column(primary_key=True) #column  name 'id', primary key of the table
-    name: Mapped[str] = mapped_column(String(100))   # column name 'name', type and no. of char it can store
-    DOB = Mapped[str] = mapped_column(String(20))
+    id: Mapped[int] = mapped_column(primary_key=True) # primary key 
+    name: Mapped[str] = mapped_column(String(100))  
+    dob: Mapped[str] = mapped_column(String(30)) 
     # the direction has been defined ( one-to-many )
     appointments: Mapped[list["Appointment"]] = relationship(
         "Appointment",
         back_populates="patient",
-        lazy="selection",
+        lazy="selectin",
         )
+    def __repr__(self):
+        return f"<Patient id={self.id} name={self.name} DOB={self.dob!r}>"
+
 
 class Doctor(Base):
     __tablename__ = 'doctors'
@@ -31,8 +34,11 @@ class Doctor(Base):
     appointments: Mapped[list["Appointment"]] = relationship(
             "Appointment",
             back_populates="doctor",
-            lazy="selection",
+            lazy="selectin",  #eager loding
             )
+    def __repr__(self):
+        return f"<Doctor id={self.id} Doctor's name={self.name} speciality={self.speciality!r}>"
+
 
 class Appointment(Base):
     __tablename__ = "appointments"
@@ -49,8 +55,8 @@ class Appointment(Base):
     # the direction has been defined ( many-to-one )
     doctor: Mapped["Doctor"] = relationship(
         "Doctor",
-        back_populates="appointments"
-        lazy="joined",
+        back_populates="appointments",
+        lazy="joined",   # for many-to-one relationships using "joined" is ideal.
     )
     # the direction has been defined ( many-to-one )
     patient: Mapped["Patient"] = relationship(
