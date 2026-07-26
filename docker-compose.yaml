@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    shm_size: 128mb
+    environment: 
+      POSTGRES_USER: healthuser123
+      POSTGRES_PASSWORD: healthpassword123  # mandatory
+      POSTGRES_DB: healthdb123
+    ports: 
+      - 5432:5432
+    volumes: 
+      - pgdata:/var/lib/postgresql/data   # postgres by default path to store data inside container ( named_volume:container_path)
+
+volumes:
+  pgdata:

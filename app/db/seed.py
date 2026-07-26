@@ -2,10 +2,10 @@
 
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, select
-from app.db.models import Base, Patient, Doctor, Appointment
+from models import Base, Patient, Doctor, Appointment
 from datetime import datetime
 
-DATABASE_URL = "postgresql+psycopg2://healthuser:healthpass@localhost:5432/healthdb"
+DATABASE_URL = "postgresql+psycopg2://healthuser123:healthpassword123@localhost:5432/healthdb123"
 
 engine = create_engine(DATABASE_URL, echo=True)
 
@@ -20,29 +20,29 @@ def seed():
         patient_B = Patient(name="BBBB", dob="23-12-2001")
 
         # doctors
-        doctor_C = Doctor(name="CCCC", dob="12-02-1980")
-        doctor_D = Doctor(name="DDDD", dob="13-04-1981")
+        doctor_C = Doctor(name="CCCC", speciality="MBBS")
+        doctor_D = Doctor(name="DDDD", speciality="Kidney Specialist")
 
         # appointments
         appt1 = Appointment(
             scheduled_at=datetime(2024, 1, 2, 3, 4),
             notes="Regular checkup",
-            doctor="CCCC",
-            patient="BBBB",
+            doctor=doctor_C,
+            patient=patient_A,
         )
 
         appt2 = Appointment(
             scheduled_at=datetime(2026, 2, 3, 4, 5),
             notes="Heart checkup",
-            doctor="DDDD",
-            patient="AAAA",
+            doctor=doctor_D,
+            patient=patient_B,
         )
 
         appt3 = Appointment(
             scheduled_at=datetime(2026, 4, 5, 7, 9),
             notes="Kidney screening",
-            doctor="CCCC",
-            patient="AAAA",
+            doctor=doctor_C,
+            patient=patient_A,
         )
 
         session.add_all([patient_A, patient_B, doctor_C, doctor_D, appt1, appt2, appt3])  # adding objects to db
@@ -55,7 +55,9 @@ def seed():
             .join(Appointment.doctor)
             .join(Appointment.patient)
         )
-        results = session.scalars(stmt).all() # as ORM objects are being used, session.scalars() is ideal or session.execute() - when we want the raw rows, tuples and columns
+        # as ORM objects are being used, session.scalars() is ideal 
+        # session.execute() - when we want the raw rows, tuples and columns
+        results = session.scalars(stmt).all() 
 
         print("Appointments : ")
 
